@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package tmpro;
+
+option go_package = "/grpcpb";
+
+message MockJSONRPCError {
+    int64 Code = 1;
+    string Message = 2;
+    optional string Data = 3;
+}
+
+message MockJSONRPCMessage {
+    string Method = 1;
+    repeated string Params = 2;
+    string ID = 3;
+    optional MockJSONRPCError Error = 4;
+    oneof Data {
+        bool BoolStatus = 5;
+        ServerStatusQuery Server = 8;
+        WebRTC WebRTC = 11;
+    };
+}
+
+message ICECandidateInit {
+    string Candidate = 1;
+    optional string SDPMid = 2;
+    optional uint32 SDPMLineIndex = 3;
+    optional string UsernameFragment = 4;
+}
+
+message WebRTC {
+    string Type = 1;
+    string SDP = 2;
+    optional ICECandidateInit IceCandidate = 3;
+}
+
+message OnlyBooleanResult {
+    bool Status = 1;
+}
+
+message ServerStatusQuery  {
+	int64 SendCount = 1;
+	int64 ActiveCount = 2;
+	int64 DoneCount = 3;
+	int64 FailedCount = 4;
+	int64 GoroutineCount = 5;
+	int64 Interval = 6;
+    int64 DataUsage = 7;
+    int64 RequestCost = 8;
+    int64 StartAt = 9;
+}
+
+message ServerStatusResponse {}

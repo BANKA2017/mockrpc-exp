@@ -1,0 +1,9 @@
+{
+    "editor.tabSize": 4,
+    "editor.formatOnSave": true,
+    "files.encoding": "utf8",
+    "files.eol": "\n",
+    "files.autoSave": "afterDelay",
+    "go.buildTags": "tiny_authorization",
+    "go.formatTool": "custom"
+}
