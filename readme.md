@@ -29,8 +29,8 @@ CENTER            NODE
 - It will only reproduce after reconnecting.
   - The problem cannot be reproduced after reconnecting immediately after startup. You need to run the system normally for a while before reconnecting.
 - The connection requires a certain network delay. Our server located at Tokyo and Los Angeles.
-  - Tokyo: 2 Core, 1GB mem, Ubuntu 20.04.6 LTS (GNU/Linux 5.15.0-1074-oracle x86_64), go version go1.23.4 linux/amd64, AMD Epyc
-  - Los Angeles: 1 Core, 2GB mem, Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-205-generic x86_64), go version go1.23.4 linux/amd64, Intel maybe?
+  - Center: Tokyo, 2 Core, 1GB mem, Ubuntu 20.04.6 LTS (GNU/Linux 5.15.0-1074-oracle x86_64), go version go1.23.4 linux/amd64, AMD Epyc
+  - Node: Los Angeles, 1 Core, 2GB mem, Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-205-generic x86_64), go version go1.23.4 linux/amd64, Intel maybe?
 - more...
 
 ## Guess
@@ -56,10 +56,27 @@ CENTER            NODE
 
 ```sh
 # center
+## use pm2
 go run main.go --addr=0.0.0.0:11111 --dev=true
 
 # node
+## should use public IP address
 go run main.go --wsurl=127.0.0.1:11111 --wspwd=node:6:1 --dev=true
+```
+
+```javascript
+// for pm2
+/// pm2 reload xxx.js
+module.exports = {
+    apps: [{
+        name: "mockrpc-exp",
+        script: "/path/to/center/binary",
+        "args": [
+            "--addr=0.0.0.0:11111",
+            "--dev=true"
+        ]
+    }]
+}
 ```
 
 If `node` crashes, the reproduction is successful.
