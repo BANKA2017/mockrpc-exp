@@ -59,14 +59,14 @@ func main() {
 			if err != nil {
 				log.Println(err)
 			}
-			log.Println("wait for WebRTC #10s")
-			<-time.After(time.Second * 10)
+			log.Println("wait for WebRTC #5s")
+			<-time.After(time.Second * 5)
 		}
 
 	}
 
-	log.Println("wait for tokens #5s")
-	<-time.After(time.Second * 5)
+	// log.Println("wait for tokens #5s")
+	// <-time.After(time.Second * 5)
 
 	// GC
 	debug.SetGCPercent(300)
@@ -75,15 +75,9 @@ func main() {
 	log.Println("ticker: init!")
 	defer functions.WsConnReconnect.Stop()
 	defer functions.UpdateServerStatusTicker.Stop()
-	updateStatusTicker := time.NewTicker(time.Millisecond * 100)
-	defer updateStatusTicker.Stop()
 
 	for {
 		select {
-		case <-updateStatusTicker.C:
-			shared.ActiveCount = int64(randRange(1, 20))
-			shared.DoneCount = shared.SendCount
-			shared.SendCount += shared.ActiveCount
 		case <-functions.WsConnReconnect.C:
 			if !functions.GetCurrentConnStatus() && len(shared.Addr) > 0 {
 				tmpAccessToken := functions.GetAccessToken(httpProtocol+"://"+shared.Addr+"/api/account/token", shared.Key)
@@ -106,6 +100,7 @@ func main() {
 				}
 			}
 		case <-functions.UpdateServerStatusTicker.C:
+			shared.SendCount += 1
 			go func() {
 				serverStatus := &grpcpb.ServerStatusQuery{
 					SendCount:      shared.SendCount,

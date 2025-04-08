@@ -7,7 +7,7 @@ import (
 var UpdateServerStatusTicker *time.Ticker
 
 // 5, 10, 20, 40, 80, 160
-const WsConnReconnectSinceTicker = 5
+const WsConnReconnectSinceTicker = 1
 const WsConnReconnectMaxTicker = 160
 
 var WsConnReconnectTicker time.Duration = WsConnReconnectSinceTicker

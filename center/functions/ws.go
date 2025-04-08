@@ -69,13 +69,6 @@ func centerPushNodeStatus(context *wsrpc.WsConnContext, wsRpc *grpcpb.MockJSONRP
 func restart_center_signal(context *wsrpc.WsConnContext, wsRpc *grpcpb.MockJSONRPCMessage) ([]byte, error) {
 	//log.Println("center: receive new node status")
 
-	log.Println("restart in 10s...")
-
-	go func() {
-		<-time.After(time.Second * 10)
-		log.Fatal("restarting...")
-	}()
-
 	return []byte{}, nil
 }
 

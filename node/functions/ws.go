@@ -101,6 +101,7 @@ func pushNodeStatusAck(context *wsrpc.WsConnContext, wsRpc *grpcpb.MockJSONRPCMe
 	in := wsRpc.GetBoolStatus()
 
 	log.Println(context, in)
+	shared.DoneCount += 1
 
 	if NewTokenOrCrashCtx.Err() == nil {
 		NewTokenOrCrashCtxCancel()

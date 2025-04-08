@@ -109,6 +109,9 @@ func (rtcContext *RTCConnContext) AddICECandidate(signal *RTCSignal) error {
 }
 
 func (rtcContext *RTCConnContext) Close() error {
+	if rtcContext.IsClosed {
+		return nil
+	}
 	rtcContext.IsClosed = true
 	connKey := shared.AppendStrings(rtcContext.ConnType, ":", strconv.Itoa(int(rtcContext.ID)))
 	rtcContext.Ext.WebRTCConnPool.Delete(connKey)
@@ -204,6 +207,8 @@ func (rtcConn *RTCConn) InitWebRTC(_ctx context.Context, c *wsrpc.WsConnContext,
 		})
 
 		dc.OnMessage(func(msg webrtc.DataChannelMessage) {
+			log.Println("rtc is_closed:", rtcContext.IsClosed)
+
 			if !rtcContext.IsClosed {
 				var response []byte
 				var wsRpc = new(grpcpb.MockJSONRPCMessage)
@@ -230,9 +235,9 @@ func (rtcConn *RTCConn) InitWebRTC(_ctx context.Context, c *wsrpc.WsConnContext,
 					log.Println(err)
 				}
 				if len(response) > 0 {
-					log.Println(response)
+					log.Println("res log:", response)
 					if err = rtcContext.Channel.Send(response); err != nil {
-						log.Println(err, response)
+						log.Println("res err:", err, response)
 					}
 				}
 			}
@@ -273,6 +278,17 @@ func (rtcConn *RTCConn) BroadcastToRTC(data []byte, connTypeFilter string) {
 
 func RPCFunc(rtcContext *RTCConnContext, wsRpc *grpcpb.MockJSONRPCMessage, methodMaps map[string]wsrpc.TypeRPCFunc) ([]byte, error) {
 	if handler, exists := methodMaps[wsRpc.Method]; exists {
+
+		if wsRpc.Method == "restart_center_signal" {
+			log.Println("disconnect in 1s...")
+
+			go func() {
+				<-time.After(time.Second * 1)
+				rtcContext.Close()
+				log.Println("disconnecting...")
+			}()
+		}
+
 		// TODO fix wrapper
 		return handler(&wsrpc.WsConnContext{
 			Addr:     rtcContext.Addr,

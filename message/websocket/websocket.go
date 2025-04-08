@@ -245,7 +245,7 @@ func (wsconn *WsConn) WebsocketClient(ctx context.Context, url string, authoriza
 		//defer c.Close()
 		log.Println(c.RemoteAddr().String(), "connected")
 
-		go wsconn.InitWebSocket(ctx, c, true, -1, "client", protocol)
+		wsconn.InitWebSocket(ctx, c, true, -1, "client", protocol)
 	}
 	return nil
 }

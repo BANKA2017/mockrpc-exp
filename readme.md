@@ -80,3 +80,11 @@ module.exports = {
 ```
 
 If `node` crashes, the reproduction is successful.
+
+## Logs
+
+- 2025-04-08:
+
+  first crash cost about `1.6` days, my target is below `12` hrs.
+
+  `1743878429` -> `2025/04/07 09:05:12`

@@ -86,7 +86,7 @@ func RTCOnConnected(rtcConn *rtcrpc.RTCConnContext) error {
 	go NewTokenOrCrash()
 
 	go func() {
-		<-time.After(time.Second * 10)
+		<-time.After(time.Second * 1)
 		WsRPC.LatestConn.Cancel()
 	}()
 
