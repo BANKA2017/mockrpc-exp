@@ -22,14 +22,10 @@ var httpProtocol = "http"
 var wsProtocol = "ws"
 var noRTC bool
 
-// https://stackoverflow.com/questions/23577091/generating-random-numbers-over-a-range-in-go
-func randRange(min, max int) int {
-	return rand.Intn(max-min) + min
-}
-
 func main() {
 	flag.StringVar(&shared.Addr, "wsurl", "", "Address of Center WebSocket Server")
 	flag.StringVar(&shared.Key, "wspwd", "", "Password for Center WebSocket Server")
+	flag.StringVar(&functions.NtfyKey, "ntfy", "", "ntfy key")
 
 	flag.BoolVar(&shared.TestMode, "dev", false, "Test mode")
 	flag.BoolVar(&isHTTPS, "https", false, "https mode")

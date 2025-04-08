@@ -61,7 +61,7 @@ go run main.go --addr=0.0.0.0:11111 --dev=true
 
 # node
 ## should use public IP address
-go run main.go --wsurl=127.0.0.1:11111 --wspwd=node:6:1 --dev=true
+go run main.go --wsurl=127.0.0.1:11111 --wspwd=node:6:1 --dev=true --ntfy=<THE_KEY>
 ```
 
 ```javascript

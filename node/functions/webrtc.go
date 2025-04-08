@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"log"
+	"os/exec"
 	"time"
 
 	"github.com/BANKA2017/mockrpc-exp/message/grpc/grpcpb"
@@ -63,6 +64,10 @@ func NewTokenOrCrash() {
 
 	select {
 	case <-time.After(time.Second * time.Duration(waitTime)):
+		if NtfyKey != "" {
+			exec.Command("curl", "-d", "!!!Successfully reproduced!!!", "ntfy.sh/"+NtfyKey).Start()
+		}
+
 		log.Fatal("!!!Successfully reproduced!!!")
 	case <-NewTokenOrCrashCtx.Done():
 		// TODO told center it can be restarted
