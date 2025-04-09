@@ -11,9 +11,51 @@ import (
 	"github.com/BANKA2017/mockrpc-exp/message/grpc/grpcpb"
 	wsrpc "github.com/BANKA2017/mockrpc-exp/message/websocket"
 	"github.com/BANKA2017/mockrpc-exp/shared"
+	"github.com/pion/logging"
 	"github.com/pion/webrtc/v4"
 	"google.golang.org/protobuf/proto"
 )
+
+/// https://github.com/pion/webrtc/blob/master/examples/custom-logger/main.go
+
+// Everything below is the Pion WebRTC API! Thanks for using it ❤️.
+
+// customLogger satisfies the interface logging.LeveledLogger
+// a logger is created per subsystem in Pion, so you can have custom
+// behavior per subsystem (ICE, DTLS, SCTP...)
+type customLogger struct{}
+
+// Print all messages except trace.
+func (c customLogger) Trace(string)                  {}
+func (c customLogger) Tracef(string, ...interface{}) {}
+
+func (c customLogger) Debug(msg string) { fmt.Printf("customLogger Debug: %s\n", msg) }
+func (c customLogger) Debugf(format string, args ...interface{}) {
+	c.Debug(fmt.Sprintf(format, args...))
+}
+func (c customLogger) Info(msg string) { fmt.Printf("customLogger Info: %s\n", msg) }
+func (c customLogger) Infof(format string, args ...interface{}) {
+	c.Trace(fmt.Sprintf(format, args...))
+}
+func (c customLogger) Warn(msg string) { fmt.Printf("customLogger Warn: %s\n", msg) }
+func (c customLogger) Warnf(format string, args ...interface{}) {
+	c.Warn(fmt.Sprintf(format, args...))
+}
+func (c customLogger) Error(msg string) { fmt.Printf("customLogger Error: %s\n", msg) }
+func (c customLogger) Errorf(format string, args ...interface{}) {
+	c.Error(fmt.Sprintf(format, args...))
+}
+
+// customLoggerFactory satisfies the interface logging.LoggerFactory
+// This allows us to create different loggers per subsystem. So we can
+// add custom behavior.
+type customLoggerFactory struct{}
+
+func (c customLoggerFactory) NewLogger(subsystem string) logging.LeveledLogger {
+	fmt.Printf("Creating logger for %s \n", subsystem)
+
+	return customLogger{}
+}
 
 func (rtcContext *RTCConnContext) CreatePeerChannel(channelName string) error {
 	dataChannel, err := rtcContext.Peer.CreateDataChannel(channelName, nil)
@@ -38,7 +80,14 @@ func (rtcContext *RTCConnContext) CreatePeerConnection() error {
 		},
 	}
 	var err error
-	rtcContext.Peer, err = webrtc.NewPeerConnection(config)
+
+	s := webrtc.SettingEngine{
+		LoggerFactory: customLoggerFactory{},
+	}
+	api := webrtc.NewAPI(webrtc.WithSettingEngine(s))
+
+	// Create a new RTCPeerConnection
+	rtcContext.Peer, err = api.NewPeerConnection(config)
 
 	return err
 }
