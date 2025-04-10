@@ -83,6 +83,15 @@ If `node` crashes, the reproduction is successful.
 
 ## Logs
 
+- 2025-04-10:
+
+  ```txt
+  customLogger Warn: Failed to start manager: connecting canceled by caller
+  customLogger Warn: Failed to start SCTP: DTLS not established
+  customLogger Warn: undeclaredMediaProcessor failed to open SrtpSession: the DTLS transport has not started yet
+  customLogger Warn: undeclaredMediaProcessor failed to open SrtcpSession: the DTLS transport has not started yet
+  ```
+
 - 2025-04-08:
 
   first crash cost about `1.6` days, my target is below `12` hrs.
