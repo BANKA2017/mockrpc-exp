@@ -237,14 +237,6 @@ func (rtcConn *RTCConn) InitWebRTC(_ctx context.Context, c *wsrpc.WsConnContext,
 		}
 	})
 
-	rtcContext.Peer.OnICEConnectionStateChange(func(state webrtc.ICEConnectionState) {
-		log.Printf("Peer ICE Connection State Changed: %s [%s]\n", state, rtcContext.Addr)
-		switch state {
-		case webrtc.ICEConnectionStateDisconnected, webrtc.ICEConnectionStateClosed, webrtc.ICEConnectionStateFailed:
-			rtcContext.Close()
-		}
-	})
-
 	rtcContext.Peer.OnConnectionStateChange(func(state webrtc.PeerConnectionState) {
 		log.Printf("Peer Connection State Changed: %s [%s]\n", state, rtcContext.Addr)
 		switch state {
