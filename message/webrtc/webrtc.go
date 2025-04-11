@@ -72,7 +72,6 @@ func (rtcContext *RTCConnContext) CreatePeerConnection() error {
 			{
 				// TODO more ICE server
 				URLs: []string{
-					"stun:stun.miwifi.com",
 					"stun:stun.cloudflare.com:3478",
 					"stun:stun.l.google.com:19302",
 				},
@@ -241,13 +240,17 @@ func (rtcConn *RTCConn) InitWebRTC(_ctx context.Context, c *wsrpc.WsConnContext,
 	rtcContext.Peer.OnICEConnectionStateChange(func(state webrtc.ICEConnectionState) {
 		log.Printf("Peer ICE Connection State Changed: %s [%s]\n", state, rtcContext.Addr)
 		switch state {
-		case webrtc.ICEConnectionStateConnected:
-			if rtcContext.Peer.SignalingState() == webrtc.SignalingStateClosed {
-				rtcContext.Close()
-			} else {
-				rtcContext.Ext.OnConnected(rtcContext)
-			}
 		case webrtc.ICEConnectionStateDisconnected, webrtc.ICEConnectionStateClosed, webrtc.ICEConnectionStateFailed:
+			rtcContext.Close()
+		}
+	})
+
+	rtcContext.Peer.OnConnectionStateChange(func(state webrtc.PeerConnectionState) {
+		log.Printf("Peer Connection State Changed: %s [%s]\n", state, rtcContext.Addr)
+		switch state {
+		case webrtc.PeerConnectionStateConnected:
+			rtcContext.Ext.OnConnected(rtcContext)
+		case webrtc.PeerConnectionStateFailed, webrtc.PeerConnectionStateClosed:
 			rtcContext.Close()
 		}
 	})

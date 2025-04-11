@@ -6,6 +6,12 @@
 
 NOT FUN `X(` !!!!!
 
+## TL;DR
+
+DO NOT VIBE CODING!!!
+
+<https://github.com/pion/webrtc/blob/master/examples/pion-to-pion/offer/main.go>
+
 ## What MockRPC is
 
 MockRPC transfers data by WebSocket or WebRTC.
